@@ -278,6 +278,41 @@ html, body {
   background: var(--black);
 }
 
+.icon-toolbox {
+  background: var(--white);
+  border: 2px solid var(--black);
+  position: relative;
+  border-radius: 1px;
+  margin-top: 8px;
+}
+
+/* handle */
+.icon-toolbox::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 8px;
+  border: 2px solid var(--black);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  background: transparent;
+}
+
+/* horizontal latch bar */
+.icon-toolbox::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 2px;
+  background: var(--black);
+}
+
 .icon-doc {
   background: var(--white);
   border: 2px solid var(--black);
@@ -416,7 +451,7 @@ html, body {
   z-index: 100;
   resize: both;
   overflow: hidden;
-  max-height: calc(100vh - 60px);
+  max-height: calc(100vh - 52px);
 }
 
 .window.visible {
@@ -926,73 +961,40 @@ p {
 
 /* ---------- TOOLKIT WINDOW ---------- */
 .toolkit-header {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
   margin-bottom: 12px;
 }
 
-.toolkit-disk-icon {
+/* CSS-drawn floppy disk for "coming soon" block */
+.cs-disk-css {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--black);
+  background: var(--white);
+  position: relative;
   flex-shrink: 0;
 }
 
-.disk-outer {
-  width: 80px;
-  height: 80px;
-  border: 3px solid var(--black);
-  background: var(--white);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 2px;
-}
-
-.disk-label-area {
+.cs-disk-css::before {
+  content: '';
   position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 18px;
-  bottom: 8px;
-  border: 2px solid var(--black);
+  top: 4px;
+  left: 4px;
+  right: 12px;
+  bottom: 4px;
+  border: 1px solid var(--black);
   background: var(--gray1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
 }
 
-.disk-label-text {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  text-align: center;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
-}
-
-.disk-label-sub {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  color: var(--gray5);
-  margin-top: 3px;
-  text-align: center;
-}
-
-.disk-hole {
+.cs-disk-css::after {
+  content: '';
   position: absolute;
-  right: 4px;
   top: 50%;
+  right: 4px;
   transform: translateY(-50%);
-  width: 10px;
-  height: 20px;
+  width: 7px;
+  height: 14px;
   background: var(--black);
   border-radius: 1px;
-}
-
-.toolkit-intro {
-  flex: 1;
-  padding-top: 4px;
 }
 
 .toolkit-status-bar {

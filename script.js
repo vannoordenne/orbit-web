@@ -26,13 +26,13 @@ setInterval(updateClock, 10000);
 // desktop: true       → icon on the desktop
 // appleMenu: true     → appears in the ⌘ apple dropdown
 const WINDOWS = [
-  { id: 'about',     label: 'About',            icon: 'folder', top: 80,  left: 80,  width: 560, menuBar: true },
+  { id: 'about',     label: 'About',            icon: 'folder', top: 80,  left: 80,  width: 560, menuBar: false },
   { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
   { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
   { id: 'educatie',  label: 'Educatie',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['workshops', 'talks', 'toolkit'] },
   { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 300, width: 580, desktop: true },
   { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 110, left: 360, width: 620, desktop: true },
-  { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'disk',   top: 100, left: 420, width: 560, desktop: true },
+  { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 100, left: 420, width: 560, desktop: true },
   { id: 'archive',   label: 'Archive',           icon: 'folder', top: 130, left: 200, width: 480 },
   { id: 'contact',   label: 'Contact / Book us', icon: 'doc',    top: 110, left: 320, width: 560, desktop: true },
 ];
@@ -62,6 +62,7 @@ function openWindow(name) {
   win.style.top = cfg.top + 'px';
   win.style.left = cfg.left + 'px';
   if (cfg.width) win.style.width = cfg.width + 'px';
+  win.style.maxHeight = (window.innerHeight - cfg.top - 32) + 'px';
 
   win.classList.add('visible');
   bringToFront(win);
@@ -228,6 +229,16 @@ function buildMenuBarItems() {
       const dropdown = document.createElement('div');
       dropdown.className = 'dropdown hidden';
       dropdown.id = `dropdown-${w.id}`;
+
+      const selfItem = document.createElement('div');
+      selfItem.className = 'dropdown-item';
+      selfItem.textContent = w.label;
+      selfItem.onclick = () => { closeAllDropdowns(); openWindow(w.id); };
+      dropdown.appendChild(selfItem);
+
+      const divider = document.createElement('div');
+      divider.className = 'dropdown-divider';
+      dropdown.appendChild(divider);
 
       w.menuBarChildren.forEach(childId => {
         const child = WINDOWS.find(x => x.id === childId);
