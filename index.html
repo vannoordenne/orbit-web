@@ -14,11 +14,8 @@
   <!-- MENU BAR -->
   <div id="menu-bar">
     <div class="menu-bar-left">
-      <span class="apple-logo" id="apple-menu-trigger">&#11835;</span>
-      <span class="menu-item" data-menu="file">File</span>
-      <span class="menu-item" data-menu="edit">Edit</span>
-      <span class="menu-item" data-menu="view">View</span>
-      <span class="menu-item" data-menu="special">Special</span>
+      <span class="orbit-logo-trigger" id="apple-menu-trigger" onclick="openWindow('about')">|.</span>
+      <div id="menu-items"></div>
     </div>
     <div class="menu-bar-center">
       <span class="orbit-logo-bar">or.bit</span>
@@ -28,75 +25,16 @@
     </div>
   </div>
 
-  <!-- APPLE MENU DROPDOWN -->
-  <div id="apple-dropdown" class="dropdown hidden">
-    <div class="dropdown-item" onclick="openWindow('about')">About or.bit</div>
-    <div class="dropdown-divider"></div>
-    <div class="dropdown-item" onclick="openWindow('research')">Research</div>
-    <div class="dropdown-item" onclick="openWindow('lab')">Lab</div>
-    <div class="dropdown-item" onclick="openWindow('educatie')">Educatie</div>
-    <div class="dropdown-divider"></div>
-    <div class="dropdown-item" onclick="openWindow('toolkit')">Dark Tech Toolkit</div>
-    <div class="dropdown-divider"></div>
-    <div class="dropdown-item" onclick="openWindow('contact')">Contact / Book us</div>
-  </div>
-
+  <!-- APPLE MENU DROPDOWN — populated by buildAppleMenu() in script.js -->
   <!-- DESKTOP -->
   <div id="desktop">
 
-    <!-- DESKTOP ICONS -->
+    <!-- DESKTOP ICONS — populated by buildDesktopIcons() in script.js -->
     <div class="desktop-grid">
-
-      <div class="desktop-icon" ondblclick="openWindow('about')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">About</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('research')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">Research</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('lab')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">Lab</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('educatie')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">Educatie</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('talks')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">Talks</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('workshops')">
-        <div class="icon-img icon-folder"></div>
-        <span class="icon-label">Workshops</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('toolkit')">
-        <div class="icon-img icon-disk"></div>
-        <span class="icon-label">Dark Tech Toolkit</span>
-      </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('archive')">
-        <div class="icon-img icon-folder"></div>
+      <div class="desktop-icon" id="trash-icon" ondblclick="openWindow('archive')">
+        <div class="icon-img icon-trash"></div>
         <span class="icon-label">Archive</span>
       </div>
-
-      <div class="desktop-icon" ondblclick="openWindow('contact')">
-        <div class="icon-img icon-doc"></div>
-        <span class="icon-label">Contact / Book us</span>
-      </div>
-
-      <div class="desktop-icon" id="trash-icon">
-        <div class="icon-img icon-trash"></div>
-        <span class="icon-label">Trash</span>
-      </div>
-
     </div>
 
     <!-- HOME SPLASH (always visible on desktop) -->
@@ -118,11 +56,10 @@
 
 
   <!-- ==============================
-       WINDOWS
+       WINDOWS — content loaded from content/{id}.html
   ============================== -->
 
-  <!-- ABOUT WINDOW -->
-  <div class="window" id="win-about" style="top:80px;left:80px;width:560px;">
+  <div class="window" id="win-about">
     <div class="title-bar" data-win="about">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('about')"></button>
@@ -130,41 +67,10 @@
       </div>
       <span class="title-bar-title">About or.bit</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">or.bit</h2>
-        <p class="win-subhead">Observatory for Research in Breakthrough and Interactive Technologies</p>
-        <div class="win-divider"></div>
-        <p>or.bit is a practice-based research institute that investigates, questions and makes technology tangible. We work at the intersection of research, design, experimentation and education.</p>
-        <p>From a transdisciplinary model, we connect critical reflection to concrete forms: publications, methods, workshops, installations, provocatypes and tools.</p>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Three branches</h3>
-        <div class="branch-block">
-          <div class="branch-label">Research</div>
-          <p>Investigating the relationship between technology and society. We develop publications, frameworks, methods and analyses around emerging technologies, AI, critical technology, speculative design and socio-technical systems.</p>
-        </div>
-        <div class="branch-block">
-          <div class="branch-label">Lab</div>
-          <p>Making technology tangible and experiential. We build provocatypes, installations, interactive experiments and other investigative prototypes that make complex systems feelable and discussable.</p>
-        </div>
-        <div class="branch-block">
-          <div class="branch-label">Educatie</div>
-          <p>Developing workshops, trainings and learning formats that help people engage critically with technology. We translate complex technological systems into understandable, experiential and discussable formats for students, professionals and public contexts.</p>
-        </div>
-        <div class="win-divider"></div>
-        <p class="win-note">or.bit focuses on emerging and interactive technologies, with particular attention to AI, digital systems, infrastructures, interfaces and their societal implications.</p>
-        <div class="win-divider"></div>
-        <div class="name-breakdown">
-          <div class="name-part"><code>or</code> — logical operator</div>
-          <div class="name-part"><code>bit</code> — binary unit</div>
-          <div class="name-part"><code>orbit</code> — system, motion, relation</div>
-        </div>
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- RESEARCH WINDOW -->
-  <div class="window" id="win-research" style="top:100px;left:140px;width:520px;">
+  <div class="window" id="win-research">
     <div class="title-bar" data-win="research">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('research')"></button>
@@ -172,41 +78,10 @@
       </div>
       <span class="title-bar-title">Research</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Research</h2>
-        <p>We investigate the relationship between technology and society. Our research produces publications, frameworks, methods and analyses around emerging technologies — AI, critical technology, speculative design and socio-technical systems.</p>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Output</h3>
-        <div class="tag-list">
-          <span class="tag">Publications</span>
-          <span class="tag">Methods</span>
-          <span class="tag">Frameworks</span>
-          <span class="tag">Scenario analysis</span>
-          <span class="tag">Case studies</span>
-          <span class="tag">Critical essays</span>
-        </div>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Focus areas</h3>
-        <div class="list-items">
-          <div class="list-item"><span class="bullet">&#9632;</span> Artificial intelligence and algorithmic systems</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Digital infrastructures and platform power</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Socio-technical systems and values in design</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Critical technology studies</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Speculative and critical design</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Human-computer interaction and interface politics</div>
-        </div>
-        <div class="win-divider"></div>
-        <div class="status-note">
-          <span class="status-dot"></span>
-          Archive and publications forthcoming. Contact us to discuss research collaborations.
-        </div>
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- LAB WINDOW -->
-  <div class="window" id="win-lab" style="top:120px;left:200px;width:520px;">
+  <div class="window" id="win-lab">
     <div class="title-bar" data-win="lab">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('lab')"></button>
@@ -214,38 +89,10 @@
       </div>
       <span class="title-bar-title">Lab</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Lab</h2>
-        <p>In the Lab we make technology tangible and experiential. We build provocatypes, installations, interactive experiments and other investigative prototypes that make complex systems feelable and discussable.</p>
-        <p>The Lab is where thinking becomes material — and where material asks new questions.</p>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Output</h3>
-        <div class="tag-list">
-          <span class="tag">Provocatypes</span>
-          <span class="tag">Installations</span>
-          <span class="tag">Experiments</span>
-          <span class="tag">Critical making</span>
-          <span class="tag">Speculative design</span>
-          <span class="tag">Physical computing</span>
-          <span class="tag">Interactive prototypes</span>
-        </div>
-        <div class="win-divider"></div>
-        <div class="lab-concept-box">
-          <div class="concept-title">What is a provocatype?</div>
-          <p class="concept-text">A provocatype is a prototype designed not to be used, but to provoke. It makes a system visible, a consequence tangible, an assumption discussable. It is research made physical.</p>
-        </div>
-        <div class="win-divider"></div>
-        <div class="status-note">
-          <span class="status-dot"></span>
-          Lab projects and cases forthcoming. Available for commissions and research collaborations.
-        </div>
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- EDUCATIE WINDOW -->
-  <div class="window" id="win-educatie" style="top:140px;left:260px;width:540px;">
+  <div class="window" id="win-educatie">
     <div class="title-bar" data-win="educatie">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('educatie')"></button>
@@ -253,40 +100,10 @@
       </div>
       <span class="title-bar-title">Educatie</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Educatie</h2>
-        <p>We develop workshops, trainings and learning formats that help people engage critically with technology. We translate complex technological systems into understandable, experiential and discussable formats — for students, professionals and public contexts.</p>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">What we offer</h3>
-        <div class="tag-list">
-          <span class="tag">Curriculum development</span>
-          <span class="tag">Workshops</span>
-          <span class="tag">Trainings</span>
-          <span class="tag">Talks</span>
-          <span class="tag">Seminars</span>
-          <span class="tag">Guided discussions</span>
-          <span class="tag">Educational tools</span>
-        </div>
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Audiences</h3>
-        <div class="list-items">
-          <div class="list-item"><span class="bullet">&#9632;</span> Higher education (HBO, WO)</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Professional organisations</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Cultural institutions</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Public programmes and events</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Research teams and labs</div>
-        </div>
-        <div class="win-divider"></div>
-        <p class="win-note">All educational formats are available in Dutch and English. Formats can be adapted to context, duration and audience.</p>
-        <div class="win-divider"></div>
-        <button class="win-cta" onclick="openWindow('contact')">Book a workshop or talk &#8594;</button>
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- TALKS WINDOW -->
-  <div class="window" id="win-talks" style="top:90px;left:300px;width:580px;">
+  <div class="window" id="win-talks">
     <div class="title-bar" data-win="talks">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('talks')"></button>
@@ -294,113 +111,10 @@
       </div>
       <span class="title-bar-title">Talks</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Talks</h2>
-        <p>Lectures and public talks on technology, systems and critical inquiry. Available for educational institutions, conferences, public programmes and organisations.</p>
-        <div class="win-divider"></div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128193;</span>
-            <span class="talk-title">The Hidden Systems Behind AI</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>The infrastructure, assumptions and invisible systems behind AI. What runs beneath the surface — and who decides?</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, professionals, mixed public</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Lecture + Q&amp;A</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>45–90 min</span></div>
-              <div class="meta-row"><span class="meta-label">Language</span><span>Dutch / English</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this talk &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128193;</span>
-            <span class="talk-title">The Invisible Infrastructure of Technology</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>Networks, data, platforms and systems that shape daily life — mostly without us noticing. A lecture on the hidden logistics of the digital world.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, design professionals, general public</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Lecture + Q&amp;A</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>45–75 min</span></div>
-              <div class="meta-row"><span class="meta-label">Language</span><span>Dutch / English</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this talk &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128193;</span>
-            <span class="talk-title">Why Tech Is Never Neutral</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>On values, power and ideology embedded in technology. Every design choice is a political choice. This talk unpacks that claim.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, educators, policy makers</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Lecture + discussion</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>45–90 min</span></div>
-              <div class="meta-row"><span class="meta-label">Language</span><span>Dutch / English</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this talk &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128193;</span>
-            <span class="talk-title">Unforeseen Consequences</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>What happens when technology exceeds the intentions of its makers. A talk on unintended effects, feedback loops and the limits of control.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Mixed professional and academic</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Lecture + Q&amp;A</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>45–75 min</span></div>
-              <div class="meta-row"><span class="meta-label">Language</span><span>Dutch / English</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this talk &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128193;</span>
-            <span class="talk-title">Introduction to Dark Tech</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>An introduction to critical and speculative thinking about technology. What is Dark Tech — and why do we need it?</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, educators, curious professionals</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Introductory lecture</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>30–60 min</span></div>
-              <div class="meta-row"><span class="meta-label">Language</span><span>Dutch / English</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this talk &#8594;</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- WORKSHOPS WINDOW -->
-  <div class="window" id="win-workshops" style="top:110px;left:360px;width:620px;">
+  <div class="window" id="win-workshops">
     <div class="title-bar" data-win="workshops">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('workshops')"></button>
@@ -408,122 +122,10 @@
       </div>
       <span class="title-bar-title">Workshops &amp; Formats</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Workshops</h2>
-        <p>Hands-on sessions that help participants engage critically and creatively with technology. Each workshop is designed to make systems discussable, assumptions visible and thinking tangible.</p>
-        <div class="win-divider"></div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128196;</span>
-            <span class="talk-title">Dark Systems 101</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>An introduction to systems thinking around technology. Participants map, analyse and discuss the systems that structure technological environments.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, educators, researchers</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Workshop with activities</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>2–3 hours</span></div>
-              <div class="meta-row"><span class="meta-label">Group size</span><span>10–25 participants</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this workshop &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128196;</span>
-            <span class="talk-title">Dark Intelligence 101</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>A workshop on AI, algorithmic logic and critical understanding of intelligent systems. Participants engage with how AI systems work — and what they assume about people.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Students, professionals, educators</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Workshop with exercises and discussion</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>2–4 hours</span></div>
-              <div class="meta-row"><span class="meta-label">Group size</span><span>10–25 participants</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this workshop &#8594;</button>
-          </div>
-        </div>
-
-        <div class="talk-card" onclick="toggleCard(this)">
-          <div class="talk-card-header">
-            <span class="folder-icon-small">&#128196;</span>
-            <span class="talk-title">Designing Dark Tech</span>
-            <span class="talk-toggle">&#9660;</span>
-          </div>
-          <div class="talk-card-body">
-            <p>Participants design their own critical and speculative concepts around technology. From idea to artifact: making the invisible visible through design.</p>
-            <div class="talk-meta">
-              <div class="meta-row"><span class="meta-label">Audience</span><span>Design students, creative professionals</span></div>
-              <div class="meta-row"><span class="meta-label">Format</span><span>Design workshop</span></div>
-              <div class="meta-row"><span class="meta-label">Duration</span><span>Half day – full day</span></div>
-              <div class="meta-row"><span class="meta-label">Group size</span><span>8–20 participants</span></div>
-              <div class="meta-row"><span class="meta-label">Status</span><span class="available-badge">Available on request</span></div>
-            </div>
-            <button class="win-cta small" onclick="openWindow('contact')">Book this workshop &#8594;</button>
-          </div>
-        </div>
-
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Educational Formats &amp; Tools</h3>
-        <p class="win-note">Standalone formats that can be deployed within workshops, seminars and educational programmes.</p>
-
-        <div class="format-grid">
-          <div class="format-card">
-            <div class="format-name">Book Club</div>
-            <div class="format-desc">Guided reading and discussion of critical technology texts</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Filmavond</div>
-            <div class="format-desc">Curated film screening with structured discussion</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">The Speculation Game</div>
-            <div class="format-desc">A game-based format for speculative scenario building</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Prototyping</div>
-            <div class="format-desc">Making technology tangible through physical and interactive prototypes</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Seminar Format</div>
-            <div class="format-desc">Structured academic discussion and knowledge exchange</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Casus Analyse Model</div>
-            <div class="format-desc">A structured method for analysing technology cases</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Ethische Matrix</div>
-            <div class="format-desc">Mapping ethical implications of technology decisions</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Discussies Faciliteren</div>
-            <div class="format-desc">Tools for facilitating critical group discussions on technology</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Dear Tech...</div>
-            <div class="format-desc">A reflective writing format: writing letters to technology</div>
-          </div>
-          <div class="format-card">
-            <div class="format-name">Fictieve Tech Analyse</div>
-            <div class="format-desc">Analysing fictional technology as a lens for real systems</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- TOOLKIT WINDOW -->
-  <div class="window" id="win-toolkit" style="top:100px;left:420px;width:560px;">
+  <div class="window" id="win-toolkit">
     <div class="title-bar" data-win="toolkit">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('toolkit')"></button>
@@ -531,72 +133,10 @@
       </div>
       <span class="title-bar-title">Dark Tech Toolkit — v0.1 [IN DEVELOPMENT]</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-
-        <div class="toolkit-header">
-          <div class="toolkit-disk-icon">
-            <div class="disk-outer">
-              <div class="disk-label-area">
-                <div class="disk-label-text">DARK TECH<br>TOOLKIT</div>
-                <div class="disk-label-sub">or.bit — v0.1</div>
-              </div>
-              <div class="disk-hole"></div>
-            </div>
-          </div>
-          <div class="toolkit-intro">
-            <h2 class="win-heading no-margin">Dark Tech Toolkit</h2>
-            <div class="toolkit-status-bar">
-              <span class="status-badge-proto">PROTOTYPE IN DEVELOPMENT</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="win-divider"></div>
-
-        <p>The Dark Tech Toolkit is a physical toolkit for critically investigating technology. It helps users make digital systems, AI and technological infrastructures discussable, tangible and analysable.</p>
-
-        <p>The toolkit is designed as a hands-on instrument — something you can pick up, spread on a table and use to think together. Not a manual. Not a textbook. A set of tools.</p>
-
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Contents (provisional)</h3>
-        <div class="list-items">
-          <div class="list-item"><span class="bullet">&#9632;</span> Analysis cards for mapping technological systems</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Discussion formats and facilitation guides</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Speculation prompts and scenario exercises</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Ethical matrices and decision frameworks</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Case study materials</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Reference sheets and concept overviews</div>
-        </div>
-
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Who is it for?</h3>
-        <div class="list-items">
-          <div class="list-item"><span class="bullet">&#9632;</span> Educators and workshop facilitators</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Students in technology, design and social sciences</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Organisations wanting to think critically about their technology use</div>
-          <div class="list-item"><span class="bullet">&#9632;</span> Researchers and curious practitioners</div>
-        </div>
-
-        <div class="win-divider"></div>
-        <div class="toolkit-coming-soon">
-          <div class="cs-icon">&#128190;</div>
-          <div class="cs-text">
-            <div class="cs-title">Physical kit — coming soon</div>
-            <p>The Dark Tech Toolkit will be available as a physical product. Sign up or get in touch to be notified when it launches, or to discuss early access.</p>
-            <button class="win-cta" onclick="openWindow('contact')">Get in touch &#8594;</button>
-          </div>
-        </div>
-
-        <div class="win-divider"></div>
-        <p class="win-note">The toolkit is developed from and alongside the workshops and educational formats of or.bit. It is tested in practice before it ships.</p>
-
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- ARCHIVE WINDOW -->
-  <div class="window" id="win-archive" style="top:130px;left:200px;width:480px;">
+  <div class="window" id="win-archive">
     <div class="title-bar" data-win="archive">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('archive')"></button>
@@ -604,26 +144,10 @@
       </div>
       <span class="title-bar-title">Archive</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Archive</h2>
-        <p>Cases, projects, publications and experiments from or.bit's ongoing practice.</p>
-        <div class="win-divider"></div>
-        <div class="empty-folder">
-          <div class="empty-folder-icon">&#128193;</div>
-          <div class="empty-folder-text">
-            <div>This folder is empty.</div>
-            <div class="empty-sub">Archive is being built. Check back soon.</div>
-          </div>
-        </div>
-        <div class="win-divider"></div>
-        <p class="win-note">or.bit's archive will document research output, lab experiments, workshop reports and educational materials.</p>
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
-  <!-- CONTACT WINDOW -->
-  <div class="window" id="win-contact" style="top:110px;left:320px;width:560px;">
+  <div class="window" id="win-contact">
     <div class="title-bar" data-win="contact">
       <div class="title-bar-controls">
         <button class="win-btn close-btn" onclick="closeWindow('contact')"></button>
@@ -631,83 +155,7 @@
       </div>
       <span class="title-bar-title">Contact / Book us</span>
     </div>
-    <div class="window-body">
-      <div class="window-scroll">
-        <h2 class="win-heading">Book a talk, workshop<br>or collaboration</h2>
-        <p>For invitations, workshops, lectures, educational formats, research collaborations or toolkit inquiries — get in touch.</p>
-        <div class="win-divider"></div>
-
-        <div class="available-for">
-          <div class="af-title">Available for:</div>
-          <div class="list-items">
-            <div class="list-item"><span class="bullet">&#9632;</span> Talks and lectures</div>
-            <div class="list-item"><span class="bullet">&#9632;</span> Workshops and trainings</div>
-            <div class="list-item"><span class="bullet">&#9632;</span> Research collaborations</div>
-            <div class="list-item"><span class="bullet">&#9632;</span> Educational commissions</div>
-            <div class="list-item"><span class="bullet">&#9632;</span> Toolkit inquiries and early access</div>
-            <div class="list-item"><span class="bullet">&#9632;</span> Lab projects and installations</div>
-          </div>
-        </div>
-
-        <div class="win-divider"></div>
-        <h3 class="win-section-title">Send a message</h3>
-
-        <form class="contact-form" onsubmit="handleFormSubmit(event)">
-          <div class="form-field">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-input" placeholder="Your name" />
-          </div>
-          <div class="form-field">
-            <label class="form-label">Organisation</label>
-            <input type="text" class="form-input" placeholder="Where are you from?" />
-          </div>
-          <div class="form-field">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" placeholder="your@email.com" />
-          </div>
-          <div class="form-field">
-            <label class="form-label">What are you looking for?</label>
-            <select class="form-input form-select">
-              <option value="">Select type...</option>
-              <option>Talk</option>
-              <option>Workshop</option>
-              <option>Research collaboration</option>
-              <option>Educational commission</option>
-              <option>Dark Tech Toolkit</option>
-              <option>Lab project / installation</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label class="form-label">Message</label>
-            <textarea class="form-input form-textarea" placeholder="Tell us what you have in mind — context, audience, date, format..."></textarea>
-          </div>
-          <button type="submit" class="form-submit">Send message &#8594;</button>
-        </form>
-
-        <div id="form-success" class="form-success hidden">
-          <div class="success-icon">&#9632;</div>
-          <div>Message sent. We'll be in touch.</div>
-        </div>
-
-        <div class="win-divider"></div>
-        <div class="contact-links">
-          <div class="contact-link-item">
-            <span class="contact-link-label">Email</span>
-            <span class="contact-link-val">hello@or-bit.institute</span>
-          </div>
-          <div class="contact-link-item">
-            <span class="contact-link-label">Location</span>
-            <span class="contact-link-val">Amsterdam, Netherlands — available internationally</span>
-          </div>
-          <div class="contact-link-item">
-            <span class="contact-link-label">Instagram</span>
-            <span class="contact-link-val">@or.bit.institute</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    <div class="window-body"><div class="window-scroll"></div></div>
   </div>
 
   <script src="script.js"></script>

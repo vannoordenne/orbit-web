@@ -79,18 +79,24 @@ html, body {
   gap: 0;
 }
 
-.apple-logo {
-  font-size: 14px;
-  font-weight: bold;
+#menu-items {
+  display: flex;
+  align-items: center;
+}
+
+.orbit-logo-trigger {
+  font-family: var(--font-pixel);
+  font-size: 18px;
   cursor: pointer;
-  padding: 0 8px;
+  padding: 0 10px;
   height: var(--menubar-h);
   display: flex;
   align-items: center;
   letter-spacing: -1px;
+  color: var(--black);
 }
 
-.apple-logo:hover,
+.orbit-logo-trigger:hover,
 .menu-item:hover {
   background: var(--black);
   color: var(--white);
@@ -140,6 +146,11 @@ html, body {
 }
 
 .dropdown.hidden { display: none; }
+
+.menu-item-open {
+  outline: 1px solid var(--black);
+  outline-offset: -2px;
+}
 
 .dropdown-item {
   padding: 4px 16px;
@@ -481,13 +492,22 @@ html, body {
   flex-shrink: 0;
 }
 
-.win-btn:hover {
-  background: var(--white);
-  border-color: var(--black);
+.close-btn::after {
+  content: '×';
+  font-size: 12px;
+  line-height: 1;
+  color: var(--black);
 }
 
-.close-btn:hover {
-  background: var(--black);
+.zoom-btn::after {
+  content: '+';
+  font-size: 13px;
+  line-height: 1;
+  color: var(--black);
+}
+
+.win-btn:hover::after {
+  color: var(--white);
 }
 
 .title-bar-title {
