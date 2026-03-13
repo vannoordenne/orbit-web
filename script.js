@@ -29,7 +29,7 @@ const WINDOWS = [
   { id: 'about',     label: 'About',            icon: 'folder', top: 80,  left: 80,  width: 560, menuBar: false },
   { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
   { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
-  { id: 'educatie',  label: 'Educatie',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['workshops', 'talks', 'toolkit'] },
+  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['workshops', 'talks', 'toolkit'] },
   { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 300, width: 580, desktop: true },
   { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 110, left: 360, width: 620, desktop: true },
   { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 100, left: 420, width: 560, desktop: true },
