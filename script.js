@@ -330,6 +330,95 @@ function handleMobileLayout() {
   }
 }
 
+// ---------- CURSOR ORBIT ----------
+function initCursorOrbit() {
+  if (window.innerWidth <= 768) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998;';
+  document.body.appendChild(canvas);
+
+  document.body.style.cursor = 'none';
+
+  const ctx = canvas.getContext('2d');
+
+  let mouseX = -999, mouseY = -999;
+  let angle = 0;
+
+  const A     = 38;
+  const B     = 11;
+  const TILT  = -0.3;
+  const COUNT = 36;
+  const SPEED = 0.026;
+
+  const cosT = Math.cos(TILT);
+  const sinT = Math.sin(TILT);
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  document.addEventListener('mouseleave', () => {
+    mouseX = -999;
+    mouseY = -999;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (mouseX > 0 && mouseY > 20) {
+      angle += SPEED;
+
+      for (let i = 0; i < COUNT; i++) {
+        const a     = angle + (i * Math.PI * 2 / COUNT);
+        const depth = Math.sin(a);
+        if (depth >= 0) continue;
+        const ex    = Math.cos(a) * A;
+        const ey    = Math.sin(a) * B;
+        const x     = mouseX + ex * cosT - ey * sinT;
+        const y     = mouseY + ex * sinT + ey * cosT;
+        const alpha = 0.15 + ((depth + 1) / 2) * 0.85;
+        ctx.fillStyle = `rgba(0,0,0,${alpha.toFixed(2)})`;
+        ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
+      }
+
+      ctx.fillStyle = '#000';
+      [
+        [0,0],
+        [0,1],[1,1],
+        [0,2],[2,2],
+        [0,3],[3,3],
+        [0,4],[1,4],[2,4],[3,4],
+      ].forEach(([dx, dy]) => ctx.fillRect(mouseX + dx, mouseY + dy, 1, 1));
+
+      for (let i = 0; i < COUNT; i++) {
+        const a     = angle + (i * Math.PI * 2 / COUNT);
+        const depth = Math.sin(a);
+        if (depth < 0) continue;
+        const ex    = Math.cos(a) * A;
+        const ey    = Math.sin(a) * B;
+        const x     = mouseX + ex * cosT - ey * sinT;
+        const y     = mouseY + ex * sinT + ey * cosT;
+        const alpha = 0.15 + ((depth + 1) / 2) * 0.85;
+        ctx.fillStyle = `rgba(0,0,0,${alpha.toFixed(2)})`;
+        ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+}
+
 // ---------- KEYBOARD SHORTCUTS ----------
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeAllDropdowns();
@@ -346,6 +435,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!isMobile()) {
     setTimeout(() => openWindow('about'), 300);
   }
+
+  initCursorOrbit();
 });
 
 window.addEventListener('resize', () => {
