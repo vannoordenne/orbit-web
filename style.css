@@ -85,14 +85,15 @@ html, body {
 }
 
 .orbit-logo-trigger {
-  font-family: var(--font-pixel);
-  font-size: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
-  padding: 0 10px;
+  padding: 0 8px;
   height: var(--menubar-h);
   display: flex;
   align-items: center;
-  letter-spacing: -1px;
   color: var(--black);
 }
 
@@ -115,9 +116,7 @@ html, body {
 }
 
 .menu-bar-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  display: none;
 }
 
 .orbit-logo-bar {
@@ -419,7 +418,6 @@ html, body {
 .branch-tag {
   font-family: var(--font-ui);
   font-size: 11px;
-  font-weight: 700;
   letter-spacing: 0.05em;
   border: 2px solid var(--black);
   padding: 4px 12px;
@@ -481,6 +479,7 @@ html, body {
   background: var(--black);
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   padding: 0 6px;
   cursor: move;
   flex-shrink: 0;
@@ -514,35 +513,34 @@ html, body {
 }
 
 .win-btn {
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--gray4);
-  background: var(--gray3);
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
   padding: 0;
   flex-shrink: 0;
 }
 
 .close-btn::after {
   content: '×';
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
-  color: var(--black);
+  color: var(--white);
 }
 
 .zoom-btn::after {
-  content: '+';
-  font-size: 13px;
+  content: '□';
+  font-size: 9px;
   line-height: 1;
-  color: var(--black);
+  color: var(--white);
 }
 
-.win-btn:hover::after {
-  color: var(--white);
+.win-btn:hover {
+  background: rgba(255,255,255,0.15);
 }
 
 .title-bar-title {
