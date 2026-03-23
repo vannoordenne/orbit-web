@@ -15,6 +15,7 @@
   <!-- MENU BAR -->
   <div id="menu-bar">
     <div class="menu-bar-left">
+      <button class="menu-hamburger" id="hamburger-btn" onclick="toggleMobileNav()">&#9776;</button>
       <span class="orbit-logo-trigger" id="apple-menu-trigger" onclick="openWindow('about')">or.bit</span>
       <div id="menu-items"></div>
     </div>
@@ -158,6 +159,8 @@
     </div>
     <div class="window-body"><div class="window-scroll"></div></div>
   </div>
+
+  <div id="mobile-nav" class="mobile-nav hidden"></div>
 
   <script src="script.js"></script>
 </body>

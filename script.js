@@ -46,12 +46,17 @@ function isMobile() {
 }
 
 function openWindow(name) {
-  if (isMobile()) return;
-
   const win = document.getElementById('win-' + name);
   if (!win) return;
 
   closeAllDropdowns();
+
+  if (isMobile()) {
+    closeMobileNav();
+    win.classList.remove('mobile-collapsed', 'mobile-hidden');
+    setTimeout(() => win.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    return;
+  }
 
   if (win.classList.contains('visible')) {
     bringToFront(win);
@@ -77,6 +82,12 @@ function openWindow(name) {
 function closeWindow(name) {
   const win = document.getElementById('win-' + name);
   if (!win) return;
+
+  if (isMobile()) {
+    win.classList.toggle('mobile-collapsed');
+    return;
+  }
+
   win.classList.remove('visible', 'active', 'inactive');
 
   const idx = windowStack.indexOf(name);
@@ -142,6 +153,15 @@ function makeDraggable() {
   document.querySelectorAll('.title-bar').forEach(bar => {
     let isDragging = false;
     let startX, startY, winStartX, winStartY;
+
+    // Mobile: tap title bar to toggle collapse
+    bar.addEventListener('click', e => {
+      if (!isMobile()) return;
+      if (e.target.classList.contains('win-btn')) return;
+      const win = bar.closest('.window');
+      if (!win) return;
+      win.classList.toggle('mobile-collapsed');
+    });
 
     bar.addEventListener('mousedown', e => {
       if (isMobile()) return;
@@ -278,10 +298,35 @@ function closeAllDropdowns() {
 }
 
 document.addEventListener('click', e => {
-  if (!e.target.closest('#menu-bar')) {
+  if (!e.target.closest('#menu-bar') && !e.target.closest('#mobile-nav')) {
     closeAllDropdowns();
+    closeMobileNav();
   }
 });
+
+// ---------- MOBILE NAV ----------
+function toggleMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  if (!nav) return;
+  nav.classList.toggle('hidden');
+}
+
+function closeMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  if (nav) nav.classList.add('hidden');
+}
+
+function buildMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  if (!nav) return;
+  WINDOWS.forEach(w => {
+    const item = document.createElement('div');
+    item.className = 'mobile-nav-item';
+    item.textContent = w.label;
+    item.addEventListener('click', () => openWindow(w.id));
+    nav.appendChild(item);
+  });
+}
 
 // ---------- CLICK ON WINDOW TO FOCUS ----------
 document.addEventListener('mousedown', e => {
@@ -439,6 +484,7 @@ document.addEventListener('keydown', e => {
 window.addEventListener('DOMContentLoaded', async () => {
   buildDesktopIcons();
   buildMenuBarItems();
+  buildMobileNav();
   await loadAllWindowContent();
   makeDraggable();
   handleMobileLayout();
