@@ -919,6 +919,86 @@ p {
   background: var(--white);
 }
 
+/* ---------- HOSTED HISTORY (workshops & talks CV) ---------- */
+.hosted-history {
+  margin: 12px 0 4px;
+}
+
+.hosted-history:not(:has(.hosted-row)) {
+  display: none;
+}
+
+.hosted-heading {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray6);
+  margin-bottom: 6px;
+}
+
+.hosted-list {
+  border: 1px solid var(--gray3);
+  background: var(--white);
+}
+
+.hosted-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 10px;
+  row-gap: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--gray3);
+  align-items: start;
+}
+
+.hosted-row:last-child {
+  border-bottom: none;
+}
+
+.hosted-year {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  font-weight: 700;
+  color: var(--gray6);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding-top: 2px;
+}
+
+.hosted-entries {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hosted-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.hosted-entry + .hosted-entry {
+  padding-top: 8px;
+  border-top: 1px solid var(--gray2);
+}
+
+.hosted-org {
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.35;
+}
+
+.hosted-context {
+  color: var(--gray7);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
 /* ---------- FORMAT GRID ---------- */
 .format-grid {
   display: grid;
@@ -1407,6 +1487,7 @@ p {
   .splash-branches { flex-wrap: wrap; }
   .toolkit-header { flex-direction: column; }
   .talk-meta .meta-row { flex-direction: column; gap: 1px; }
+  .hosted-row { grid-template-columns: 36px 1fr; column-gap: 8px; }
   .window-scroll { padding: 12px 14px 20px; }
   .meta-label { min-width: 60px; }
   p { font-size: 12px; }

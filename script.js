@@ -54,6 +54,7 @@ function openWindow(name) {
   if (isMobile()) {
     closeMobileNav();
     win.classList.remove('mobile-collapsed', 'mobile-hidden');
+    scheduleOpenFirstTalkCard(name);
     setTimeout(() => win.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     return;
   }
@@ -77,6 +78,7 @@ function openWindow(name) {
   }
 
   updateActiveStates();
+  scheduleOpenFirstTalkCard(name);
 }
 
 function closeWindow(name) {
@@ -221,6 +223,7 @@ async function loadAllWindowContent() {
       })
       .catch(() => {})
   ));
+  initTalkCards();
 }
 
 // ---------- BUILD DESKTOP ICONS ----------
@@ -338,8 +341,35 @@ document.addEventListener('mousedown', e => {
 });
 
 // ---------- TALK CARD TOGGLE ----------
+let suppressCardToggle = false;
+
 function toggleCard(card) {
+  if (suppressCardToggle) return;
   card.classList.toggle('open');
+}
+
+function openFirstTalkCard(windowId) {
+  const scroll = document.querySelector(`#win-${windowId} .window-scroll`);
+  if (!scroll) return;
+  const cards = scroll.querySelectorAll(':scope > .talk-card');
+  if (cards.length === 0) return;
+  cards[0].classList.add('open');
+}
+
+function scheduleOpenFirstTalkCard(windowId) {
+  openFirstTalkCard(windowId);
+  suppressCardToggle = true;
+  setTimeout(() => {
+    openFirstTalkCard(windowId);
+    suppressCardToggle = false;
+  }, 50);
+}
+
+function initTalkCards() {
+  document.querySelectorAll('.window-scroll').forEach(scroll => {
+    const first = scroll.querySelector(':scope > .talk-card');
+    if (first) first.classList.add('open');
+  });
 }
 
 document.addEventListener('click', e => {
