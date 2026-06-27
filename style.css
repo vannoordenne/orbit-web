@@ -1339,6 +1339,18 @@ p {
 
 .form-error.hidden { display: none; }
 
+.form-activation {
+  padding: 12px;
+  border: 2px solid var(--black);
+  background: var(--gray1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  margin-top: 8px;
+}
+
+.form-activation.hidden { display: none; }
+
 .form-error a {
   color: var(--black);
   font-weight: 700;

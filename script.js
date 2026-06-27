@@ -401,19 +401,30 @@ document.addEventListener('click', e => {
 });
 
 // ---------- CONTACT FORM ----------
-const CONTACT_FORM_ENDPOINT = 'https://formsubmit.co/ajax/hello@or-bit.xyz';
+const CONTACT_FORM_ENDPOINT = 'https://formsubmit.co/ajax/marise@or-bit.xyz';
+
+function isFormSubmitSuccess(data) {
+  return data.success === true || data.success === 'true';
+}
+
+function hideFormNotices() {
+  ['form-success', 'form-activation', 'form-error'].forEach(id => {
+    document.getElementById(id)?.classList.add('hidden');
+  });
+}
 
 async function handleFormSubmit(e) {
   e.preventDefault();
   const form = e.target;
   const submitBtn = form.querySelector('.form-submit');
   const success = document.getElementById('form-success');
+  const activation = document.getElementById('form-activation');
   const error = document.getElementById('form-error');
+  const errorText = document.getElementById('form-error-text');
 
   if (form.querySelector('[name="_honey"]')?.value) return;
 
-  if (success) success.classList.add('hidden');
-  if (error) error.classList.add('hidden');
+  hideFormNotices();
 
   const originalLabel = submitBtn.textContent;
   submitBtn.disabled = true;
@@ -427,15 +438,24 @@ async function handleFormSubmit(e) {
     });
 
     const data = await response.json().catch(() => ({}));
+    const message = typeof data.message === 'string' ? data.message : '';
 
-    if (response.ok && data.success !== false) {
+    if (isFormSubmitSuccess(data)) {
       form.reset();
       form.style.display = 'none';
       if (success) success.classList.remove('hidden');
       return;
     }
 
-    throw new Error(data.message || 'Submit failed');
+    if (message.toLowerCase().includes('activation')) {
+      if (activation) activation.classList.remove('hidden');
+      return;
+    }
+
+    if (error && errorText) {
+      errorText.textContent = message || 'Something went wrong. Please try again or email hello@or-bit.xyz directly.';
+      error.classList.remove('hidden');
+    }
   } catch {
     if (error) error.classList.remove('hidden');
   } finally {

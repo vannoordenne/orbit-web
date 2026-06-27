@@ -18,6 +18,8 @@
 
 <form id="contact-form" class="contact-form" onsubmit="handleFormSubmit(event)">
   <input type="hidden" name="_subject" value="New message via or.bit website">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_cc" value="hello@or-bit.xyz">
   <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off">
   <div class="form-field">
     <label class="form-label" for="contact-name">Name</label>
@@ -45,18 +47,22 @@
   </div>
   <div class="form-field">
     <label class="form-label" for="contact-message">Message</label>
-    <textarea id="contact-message" name="message" class="form-input form-textarea" placeholder="Tell us what you have in mind — context, audience, date, format..." required></textarea>
+    <textarea id="contact-message" name="message" class="form-input form-textarea" placeholder="Tell us what you have in mind:context, audience, date, format..." required></textarea>
   </div>
   <button type="submit" class="form-submit">Send message &#8594;</button>
 </form>
 
 <div id="form-success" class="form-success hidden">
   <div class="success-icon">&#9632;</div>
-  <div>Message sent. We'll be in touch.</div>
+  <div id="form-success-text">Message sent. We'll be in touch.</div>
+</div>
+
+<div id="form-activation" class="form-activation hidden">
+  <div>Almost there — FormSubmit sent an activation link to <strong>marise@or-bit.xyz</strong>. Open that email (check spam) and click <em>Activate Form</em>, then submit again. After activation, copies also go to hello@or-bit.xyz.</div>
 </div>
 
 <div id="form-error" class="form-error hidden">
-  <div>Something went wrong. Please try again or email <a href="mailto:hello@or-bit.xyz">hello@or-bit.xyz</a> directly.</div>
+  <div id="form-error-text">Something went wrong. Please try again or email <a href="mailto:hello@or-bit.xyz">hello@or-bit.xyz</a> directly.</div>
 </div>
 
 <div class="win-divider"></div>
