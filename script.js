@@ -27,6 +27,7 @@ setInterval(updateClock, 10000);
 // appleMenu: true     → appears in the ⌘ apple dropdown
 const WINDOWS = [
   { id: 'about',     label: 'About',            icon: 'folder', top: 80,  left: 80,  width: 560, menuBar: false },
+  { id: 'founders',  label: 'Meet the founders', icon: 'folder', top: 100, left: 160, width: 680 },
   { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
   { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
   { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['workshops', 'talks', 'toolkit'] },
@@ -45,6 +46,16 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
+function positionFoundersWindow(win) {
+  if (isMobile()) return;
+  const aboutWin = document.getElementById('win-about');
+  if (!aboutWin || !aboutWin.classList.contains('visible')) return;
+  const aboutTop = parseInt(aboutWin.style.top, 10) || 80;
+  const aboutLeft = parseInt(aboutWin.style.left, 10) || 80;
+  win.style.top = (aboutTop + 36) + 'px';
+  win.style.left = (aboutLeft + 48) + 'px';
+}
+
 function openWindow(name) {
   const win = document.getElementById('win-' + name);
   if (!win) return;
@@ -61,6 +72,7 @@ function openWindow(name) {
 
   if (win.classList.contains('visible')) {
     bringToFront(win);
+    if (name === 'founders') positionFoundersWindow(win);
     return;
   }
 
@@ -79,6 +91,8 @@ function openWindow(name) {
 
   updateActiveStates();
   scheduleOpenFirstTalkCard(name);
+
+  if (name === 'founders') positionFoundersWindow(win);
 }
 
 function closeWindow(name) {
@@ -373,18 +387,61 @@ function initTalkCards() {
 }
 
 document.addEventListener('click', e => {
+  const openTrigger = e.target.closest('[data-open-window]');
+  if (openTrigger) {
+    e.preventDefault();
+    e.stopPropagation();
+    openWindow(openTrigger.dataset.openWindow);
+    return;
+  }
+
   if (e.target.classList.contains('win-cta') || e.target.tagName === 'BUTTON') {
     e.stopPropagation();
   }
 });
 
 // ---------- CONTACT FORM ----------
-function handleFormSubmit(e) {
+const CONTACT_FORM_ENDPOINT = 'https://formsubmit.co/ajax/hello@or-bit.xyz';
+
+async function handleFormSubmit(e) {
   e.preventDefault();
   const form = e.target;
+  const submitBtn = form.querySelector('.form-submit');
   const success = document.getElementById('form-success');
-  form.style.display = 'none';
-  if (success) success.classList.remove('hidden');
+  const error = document.getElementById('form-error');
+
+  if (form.querySelector('[name="_honey"]')?.value) return;
+
+  if (success) success.classList.add('hidden');
+  if (error) error.classList.add('hidden');
+
+  const originalLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  try {
+    const response = await fetch(CONTACT_FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(form),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok && data.success !== false) {
+      form.reset();
+      form.style.display = 'none';
+      if (success) success.classList.remove('hidden');
+      return;
+    }
+
+    throw new Error(data.message || 'Submit failed');
+  } catch {
+    if (error) error.classList.remove('hidden');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
 }
 
 // ---------- DESKTOP ICON SELECTION ----------
