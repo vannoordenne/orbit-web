@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marise van Noordenne — or.bit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='black'/><text x='4' y='24' font-family='monospace' font-size='20' font-weight='bold' fill='white'>|.</text></svg>">
+  <style>
+    :root {
+      --bg:         #c0c0c0;
+      --bg-light:   #d4d0c8;
+      --black:      #000;
+      --white:      #fff;
+      --highlight:  #000080;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-pixel: 'VT323', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* ── DESKTOP ──────────────────────────────── */
+    .desktop {
+      width: 100%;
+      height: 100%;
+      background-color: #b0b0b0;
+      background-image:
+        radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px);
+      background-size: 6px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ── MENUBAR ──────────────────────────────── */
+    .menubar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--black);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 16px;
+      z-index: 100;
+    }
+
+    .menubar-logo {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: var(--black);
+      cursor: pointer;
+    }
+
+    .menubar-right {
+      margin-left: auto;
+      font-size: 11px;
+    }
+
+    /* ── DROPDOWN ─────────────────────────────── */
+    .menu-item {
+      position: relative;
+    }
+
+    .menu-item > span {
+      font-size: 11px;
+      cursor: default;
+      padding: 0 4px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      user-select: none;
+    }
+
+    .menu-item > span:hover,
+    .menu-item.open > span {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 0;
+      background: var(--white);
+      border: 1px solid var(--black);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+      min-width: 140px;
+      z-index: 200;
+    }
+
+    .menu-item.open .dropdown {
+      display: block;
+    }
+
+    .drop-item {
+      font-size: 10px;
+      padding: 4px 10px;
+      cursor: default;
+      white-space: nowrap;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .drop-item:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .drop-item.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .drop-sep {
+      height: 1px;
+      background: var(--black);
+      opacity: 0.2;
+      margin: 2px 0;
+    }
+
+    /* ── WINDOW ───────────────────────────────── */
+    .window {
+      background: var(--bg);
+      border: 2px solid var(--black);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      width: min(360px, 92vw);
+      margin-top: 20px;
+
+      /* open animation */
+      opacity: 0;
+      transform: scale(0.93);
+      animation: windowOpen 0.12s ease-out 0.3s forwards;
+    }
+
+    @keyframes windowOpen {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ── TITLEBAR ─────────────────────────────── */
+    .titlebar {
+      height: 22px;
+      background: var(--black);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 6px;
+      cursor: default;
+      user-select: none;
+      position: relative;
+    }
+
+    .titlebar-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--white);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+    }
+
+    .titlebar-btns { display: flex; gap: 4px; }
+    .tbtn {
+      width: 12px; height: 12px;
+      border: 1px solid rgba(255,255,255,0.6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; color: var(--white); line-height: 1;
+      cursor: pointer;
+    }
+    .tbtn:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── WINDOW BODY ──────────────────────────── */
+    .win-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* header: photo + name */
+    .win-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .win-photo {
+      width: 72px;
+      height: 72px;
+      border: 2px solid var(--black);
+      flex-shrink: 0;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    .win-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      image-rendering: pixelated;
+      display: block;
+    }
+
+    .win-identity {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .win-logo {
+      font-family: var(--font-pixel);
+      font-size: 28px;
+      line-height: 1;
+      color: var(--black);
+      letter-spacing: -0.5px;
+    }
+
+    .win-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.3;
+    }
+
+    .win-role {
+      font-size: 8px;
+      color: var(--black);
+      opacity: 0.65;
+      line-height: 1.55;
+    }
+
+    /* divider */
+    .win-divider {
+      height: 1px;
+      background: var(--black);
+      opacity: 0.25;
+    }
+
+    /* contact rows */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .contact-key {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.45;
+      min-width: 52px;
+      flex-shrink: 0;
+    }
+
+    .contact-val {
+      font-size: 11px;
+      color: var(--black);
+    }
+
+    a.contact-val {
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+    }
+
+    a.contact-val:hover {
+      border-bottom-color: var(--black);
+    }
+
+    /* branch tags */
+    .tag-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border: 1px solid var(--black);
+      padding: 2px 5px;
+      color: var(--black);
+    }
+
+    /* actions */
+    .win-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn {
+      flex: 1;
+      height: 24px;
+      border: 2px solid var(--black);
+      background: var(--bg-light);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--black);
+      box-shadow: 2px 2px 0 var(--black);
+      transition: transform 0.05s, box-shadow 0.05s;
+    }
+
+    .btn:hover {
+      background: var(--white);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .btn.primary {
+      background: var(--black);
+      color: var(--white);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    }
+
+    .btn.primary:hover {
+      background: #222;
+    }
+
+    /* status bar */
+    .win-statusbar {
+      height: 18px;
+      border-top: 1px solid rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 5px; height: 5px;
+      background: var(--black);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 0.1; }
+    }
+
+    .status-text {
+      font-size: 8px;
+      opacity: 0.45;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── DESKTOP ICON ─────────────────────────── */
+    .desktop-icon {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+      padding: 6px;
+    }
+
+    .desktop-icon:hover .icon-label {
+      background: var(--highlight);
+      color: var(--white);
+    }
+
+    .desktop-icon:hover .icon-graphic {
+      outline: 1px dashed var(--black);
+      outline-offset: 2px;
+    }
+
+    .icon-graphic {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--black);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-pixel);
+      font-size: 18px;
+      color: var(--black);
+      line-height: 1;
+    }
+
+    .icon-label {
+      font-size: 9px;
+      color: var(--black);
+      text-align: center;
+      width: 52px;
+      line-height: 1.3;
+      padding: 1px 2px;
+      word-break: break-all;
+    }
+
+    /* ── FULLSCREEN ───────────────────────────── */
+    .window.fullscreen {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      box-shadow: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .window.fullscreen .win-body {
+      flex: 1;
+      justify-content: center;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      overflow-y: auto;
+    }
+
+    /* mobile tweaks */
+    @media (max-width: 400px) {
+      .win-logo { font-size: 40px; }
+      .win-body { padding: 10px 12px; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menubar">
+    <a class="menubar-logo" href="https://or-bit.xyz" target="_blank">or.bit</a>
+
+    <div class="menu-item" id="menuFile">
+      <span onclick="toggleMenu('menuFile')">File</span>
+      <div class="dropdown">
+        <div class="drop-item" onclick="openWindow(); closeMenus()">Open</div>
+        <div class="drop-item" onclick="closeWindow(); closeMenus()">Close</div>
+        <div class="drop-sep"></div>
+        <div class="drop-item" onclick="document.getElementById('vcardBtn').click(); closeMenus()">Save Contact…</div>
+        <div class="drop-sep"></div>
+        <div class="drop-item" onclick="window.open('https://or-bit.xyz','_blank'); closeMenus()">Visit or-bit.xyz</div>
+      </div>
+    </div>
+
+    <div class="menu-item" id="menuEdit">
+      <span onclick="toggleMenu('menuEdit')">Edit</span>
+      <div class="dropdown">
+        <div class="drop-item" onclick="copyText('marise@or-bit.xyz'); closeMenus()">Copy Email</div>
+        <div class="drop-item" onclick="copyText('or-bit.xyz'); closeMenus()">Copy Website</div>
+        <div class="drop-item" onclick="copyText('https://www.linkedin.com/in/marisevannoordenne/'); closeMenus()">Copy LinkedIn</div>
+        <div class="drop-sep"></div>
+        <div class="drop-item" onclick="toggleFullscreen(); closeMenus()">Toggle Fullscreen</div>
+      </div>
+    </div>
+
+    <span class="menubar-right" id="clock"></span>
+  </div>
+
+  <div class="desktop">
+
+    <div class="desktop-icon" id="icon" onclick="openWindow()">
+      <div class="icon-graphic">vcf</div>
+      <div class="icon-label">marise.vcf</div>
+    </div>
+
+    <div class="window" id="win">
+
+      <div class="titlebar">
+        <span class="titlebar-title">marise.vcf</span>
+        <div class="titlebar-btns">
+          <div class="tbtn" onclick="toggleFullscreen()">□</div>
+          <div class="tbtn" onclick="closeWindow()">×</div>
+        </div>
+      </div>
+
+      <div class="win-body">
+
+        <div class="win-header">
+          <div class="win-photo">
+            <img src="/images/marise.png" alt="Marise van Noordenne">
+          </div>
+          <div class="win-identity">
+            <div class="win-logo">or.bit</div>
+            <div>
+              <div class="win-name">Marise van Noordenne</div>
+              <div class="tag-row" style="margin-top:5px;">
+                <span class="tag">Technologist</span>
+                <span class="tag">Researcher</span>
+                <span class="tag">Educator</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="win-divider"></div>
+
+        <div class="contact-list">
+          <div class="contact-row">
+            <span class="contact-key">web</span>
+            <a class="contact-val" href="https://or-bit.xyz" target="_blank">or-bit.xyz</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-key">mail</span>
+            <a class="contact-val" href="mailto:marise@or-bit.xyz">marise@or-bit.xyz</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-key">linkedin</span>
+            <a class="contact-val" href="https://www.linkedin.com/in/marisevannoordenne/" target="_blank">/marisevannoordenne</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-key">location</span>
+            <span class="contact-val">Zwolle, NL</span>
+          </div>
+        </div>
+
+        <div class="win-actions">
+          <a class="btn primary" id="vcardBtn" download="marise.vcf">
+            ↓ Save Contact
+          </a>
+          <a class="btn" href="https://or-bit.xyz" target="_blank">
+            Visit or-bit.xyz →
+          </a>
+        </div>
+
+      </div>
+
+      <div class="win-statusbar">
+        <div class="status-dot"></div>
+        <span class="status-text">1 contact loaded</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Menus ──────────────────────────────────────
+    function toggleMenu(id) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.contains('open');
+      closeMenus();
+      if (!isOpen) el.classList.add('open');
+    }
+
+    function closeMenus() {
+      document.querySelectorAll('.menu-item.open').forEach(m => m.classList.remove('open'));
+    }
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.menu-item')) closeMenus();
+    });
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+
+    // ── Clock ──────────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    // ── vCard download ─────────────────────────────
+    const vcard = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'FN:Marise van Noordenne',
+      'N:van Noordenne;Marise;;;',
+      'ORG:or.bit',
+      'TITLE:Co-founder / Creative Technologist / Educator / Researcher',
+      'EMAIL;TYPE=WORK:marise@or-bit.xyz',
+      'URL:https://or-bit.xyz',
+      'ADR;TYPE=WORK:;;Zwolle;;Nederland',
+      'NOTE:Observatory for Research in Breakthrough & Interactive Technologies',
+      'END:VCARD'
+    ].join('\r\n');
+
+    const blob = new Blob([vcard], { type: 'text/vcard' });
+    document.getElementById('vcardBtn').href = URL.createObjectURL(blob);
+
+    // ── Window open / close ────────────────────────
+    const win  = document.getElementById('win');
+    const icon = document.getElementById('icon');
+
+    function closeWindow() {
+      win.style.animation = 'none';
+      win.style.opacity   = '0';
+      win.style.transform = 'scale(0.93)';
+      win.style.transition = 'opacity 0.08s ease-in, transform 0.08s ease-in';
+      setTimeout(() => {
+        win.style.display = 'none';
+        win.style.transition = '';
+        icon.style.display = 'flex';
+      }, 90);
+    }
+
+    function toggleFullscreen() {
+      win.classList.toggle('fullscreen');
+    }
+
+    function openWindow() {
+      icon.style.display = 'none';
+      win.style.display  = 'flex';
+      win.style.opacity  = '0';
+      win.style.transform = 'scale(0.93)';
+      win.style.animation = 'none';
+      // force reflow so transition kicks in
+      win.offsetHeight;
+      win.style.transition = 'opacity 0.1s ease-out, transform 0.1s ease-out';
+      win.style.opacity   = '1';
+      win.style.transform = 'scale(1)';
+    }
+  </script>
+
+</body>
+</html>
