@@ -132,6 +132,88 @@ html, body {
   padding-right: 4px;
 }
 
+/* ---------- COLLAPSE ALL (bottom dock) ---------- */
+.collapse-all-btn {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 9990;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 2px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+.collapse-all-icon {
+  display: block;
+  width: 14px;
+  height: 12px;
+  position: relative;
+}
+
+.collapse-all-icon::before,
+.collapse-all-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 11px;
+  height: 7px;
+  border: 1.5px solid currentColor;
+  background: var(--white);
+}
+
+.collapse-all-icon::before {
+  top: 0;
+  left: 3px;
+}
+
+.collapse-all-icon::after {
+  bottom: 0;
+  left: 0;
+}
+
+.collapse-all-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.collapse-all-btn:hover,
+.collapse-all-btn:focus-visible {
+  background: var(--black);
+  color: var(--white);
+}
+
+.collapse-all-btn:hover .collapse-all-tooltip,
+.collapse-all-btn:focus-visible .collapse-all-tooltip {
+  opacity: 1;
+}
+
+.collapse-all-btn:hover .collapse-all-icon::before,
+.collapse-all-btn:hover .collapse-all-icon::after {
+  background: var(--black);
+}
+
 /* ---------- DROPDOWN ---------- */
 .dropdown {
   position: fixed;
@@ -187,25 +269,29 @@ html, body {
 /* ---------- DESKTOP ICONS ---------- */
 .desktop-grid {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
+  inset: 0;
+  pointer-events: none;
   z-index: 10;
 }
 
 .desktop-icon {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  cursor: pointer;
+  cursor: default;
   padding: 4px 6px;
   border: 2px solid transparent;
   width: 72px;
   text-align: center;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.desktop-icon.dragging {
+  z-index: 50;
+  cursor: grabbing;
 }
 
 .desktop-icon:hover,
@@ -1306,6 +1392,7 @@ p {
 
 .form-success {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 12px;
@@ -1315,6 +1402,11 @@ p {
   font-size: 12px;
   font-weight: 700;
   margin-top: 8px;
+}
+
+.form-success .form-reset-btn {
+  width: 100%;
+  margin-top: 4px;
 }
 
 .form-success.hidden { display: none; }

@@ -30,7 +30,7 @@ const WINDOWS = [
   { id: 'founders',  label: 'Meet the founders', icon: 'folder', top: 100, left: 160, width: 680 },
   { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
   { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
-  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['workshops', 'talks', 'toolkit'] },
+  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['talks', 'workshops', 'toolkit'] },
   { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 300, width: 580, desktop: true },
   { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 110, left: 360, width: 620, desktop: true },
   { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 100, left: 420, width: 560, desktop: true },
@@ -109,6 +109,32 @@ function closeWindow(name) {
   const idx = windowStack.indexOf(name);
   if (idx > -1) windowStack.splice(idx, 1);
 
+  updateActiveStates();
+}
+
+function collapseAllWindows() {
+  closeAllDropdowns();
+  closeMobileNav();
+
+  if (isMobile()) {
+    document.querySelectorAll('.window').forEach(win => {
+      win.classList.add('mobile-collapsed');
+    });
+    return;
+  }
+
+  document.querySelectorAll('.window.visible').forEach(win => {
+    win.classList.remove('visible', 'active', 'inactive');
+    if (win.dataset.zoomed === 'true') {
+      win.style.top = win.dataset.origTop || '';
+      win.style.left = win.dataset.origLeft || '';
+      win.style.width = win.dataset.origWidth || '';
+      win.style.height = win.dataset.origHeight || 'auto';
+      win.dataset.zoomed = 'false';
+    }
+  });
+
+  windowStack.length = 0;
   updateActiveStates();
 }
 
@@ -241,6 +267,72 @@ async function loadAllWindowContent() {
 }
 
 // ---------- BUILD DESKTOP ICONS ----------
+const DESKTOP_ICON_STEP = 80;
+const DESKTOP_ICON_MARGIN = 16;
+const DESKTOP_ICON_WIDTH = 72;
+
+function initDesktopIconPositions() {
+  const icons = document.querySelectorAll('.desktop-grid .desktop-icon');
+  const baseLeft = window.innerWidth - DESKTOP_ICON_MARGIN - DESKTOP_ICON_WIDTH;
+
+  icons.forEach((icon, i) => {
+    if (!icon.style.left) {
+      icon.style.left = baseLeft + 'px';
+      icon.style.top = (DESKTOP_ICON_MARGIN + i * DESKTOP_ICON_STEP) + 'px';
+    }
+  });
+}
+
+function makeDesktopIconsDraggable() {
+  if (isMobile()) return;
+
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    icon.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+
+      let isDragging = false;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const iconStartX = parseInt(icon.style.left, 10) || 0;
+      const iconStartY = parseInt(icon.style.top, 10) || 0;
+
+      document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+      icon.classList.add('selected', 'dragging');
+
+      function onMouseMove(ev) {
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+
+        if (!isDragging && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+        isDragging = true;
+
+        let newLeft = iconStartX + dx;
+        let newTop = iconStartY + dy;
+
+        const minTop = 8;
+        const maxTop = window.innerHeight - icon.offsetHeight - 8;
+        const maxLeft = window.innerWidth - icon.offsetWidth - 8;
+
+        newTop = Math.max(minTop, Math.min(maxTop, newTop));
+        newLeft = Math.max(8, Math.min(maxLeft, newLeft));
+
+        icon.style.left = newLeft + 'px';
+        icon.style.top = newTop + 'px';
+      }
+
+      function onMouseUp() {
+        icon.classList.remove('dragging');
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      e.preventDefault();
+    });
+  });
+}
+
 function buildDesktopIcons() {
   const grid = document.querySelector('.desktop-grid');
   const trash = document.getElementById('trash-icon');
@@ -407,6 +499,18 @@ function hideFormNotices() {
   ['form-success', 'form-error'].forEach(id => {
     document.getElementById(id)?.classList.add('hidden');
   });
+}
+
+function resetContactForm() {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  const error = document.getElementById('form-error');
+  if (form) {
+    form.reset();
+    form.style.display = '';
+  }
+  if (success) success.classList.add('hidden');
+  if (error) error.classList.add('hidden');
 }
 
 async function handleFormSubmit(e) {
@@ -593,6 +697,8 @@ document.addEventListener('keydown', e => {
 // ---------- INIT ----------
 window.addEventListener('DOMContentLoaded', async () => {
   buildDesktopIcons();
+  initDesktopIconPositions();
+  makeDesktopIconsDraggable();
   buildMenuBarItems();
   buildMobileNav();
   await loadAllWindowContent();
