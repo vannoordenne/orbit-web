@@ -189,7 +189,7 @@ html, body {
   color: var(--black);
   font-family: var(--font-ui);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.03em;
   white-space: nowrap;
   opacity: 0;
@@ -250,6 +250,19 @@ html, body {
   background: var(--black);
   margin: 2px 0;
 }
+
+.desktop-context-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  z-index: 10000;
+  box-shadow: var(--win-shadow);
+}
+
+.desktop-context-menu.hidden { display: none; }
 
 /* ---------- DESKTOP ---------- */
 #desktop {

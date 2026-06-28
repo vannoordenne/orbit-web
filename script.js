@@ -267,19 +267,80 @@ async function loadAllWindowContent() {
 }
 
 // ---------- BUILD DESKTOP ICONS ----------
-const DESKTOP_ICON_STEP = 80;
+const DESKTOP_ICON_GAP = 20;
 const DESKTOP_ICON_MARGIN = 16;
 const DESKTOP_ICON_WIDTH = 72;
 
-function initDesktopIconPositions() {
+function initDesktopIconPositions(force = false) {
   const icons = document.querySelectorAll('.desktop-grid .desktop-icon');
   const baseLeft = window.innerWidth - DESKTOP_ICON_MARGIN - DESKTOP_ICON_WIDTH;
+  let y = DESKTOP_ICON_MARGIN;
 
-  icons.forEach((icon, i) => {
-    if (!icon.style.left) {
+  icons.forEach((icon) => {
+    if (force || !icon.style.left) {
       icon.style.left = baseLeft + 'px';
-      icon.style.top = (DESKTOP_ICON_MARGIN + i * DESKTOP_ICON_STEP) + 'px';
+      icon.style.top = y + 'px';
     }
+    y += icon.offsetHeight + DESKTOP_ICON_GAP;
+  });
+}
+
+function resetDesktopIconPositions() {
+  document.querySelectorAll('.desktop-grid .desktop-icon').forEach(icon => {
+    icon.style.left = '';
+    icon.style.top = '';
+    icon.classList.remove('selected');
+  });
+  initDesktopIconPositions(true);
+  closeDesktopContextMenu();
+}
+
+function closeDesktopContextMenu() {
+  const menu = document.getElementById('desktop-context-menu');
+  if (menu) menu.classList.add('hidden');
+}
+
+function initDesktopContextMenu() {
+  if (isMobile()) return;
+
+  let menu = document.getElementById('desktop-context-menu');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.id = 'desktop-context-menu';
+    menu.className = 'desktop-context-menu hidden';
+    menu.innerHTML = `
+      <div class="dropdown-item" data-action="reset-icons">Reset all folders</div>
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-item" data-action="collapse-windows">Collapse all windows</div>
+    `;
+    document.body.appendChild(menu);
+
+    menu.addEventListener('click', e => {
+      const item = e.target.closest('[data-action]');
+      if (!item) return;
+      if (item.dataset.action === 'reset-icons') resetDesktopIconPositions();
+      if (item.dataset.action === 'collapse-windows') collapseAllWindows();
+    });
+  }
+
+  document.getElementById('desktop').addEventListener('contextmenu', e => {
+    if (isMobile()) return;
+    e.preventDefault();
+    closeAllDropdowns();
+
+    menu.classList.remove('hidden');
+    menu.style.left = e.clientX + 'px';
+    menu.style.top = e.clientY + 'px';
+
+    requestAnimationFrame(() => {
+      const rect = menu.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        menu.style.left = (window.innerWidth - rect.width - 8) + 'px';
+      }
+      if (rect.bottom > window.innerHeight) {
+        menu.style.top = (window.innerHeight - rect.height - 8) + 'px';
+      }
+    });
   });
 }
 
@@ -404,12 +465,16 @@ function buildMenuBarItems() {
 function closeAllDropdowns() {
   document.querySelectorAll('.dropdown').forEach(d => d.classList.add('hidden'));
   document.querySelectorAll('.menu-item-open').forEach(el => el.classList.remove('menu-item-open'));
+  closeDesktopContextMenu();
 }
 
 document.addEventListener('click', e => {
   if (!e.target.closest('#menu-bar') && !e.target.closest('#mobile-nav')) {
     closeAllDropdowns();
     closeMobileNav();
+  }
+  if (!e.target.closest('#desktop-context-menu')) {
+    closeDesktopContextMenu();
   }
 });
 
@@ -699,6 +764,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   buildDesktopIcons();
   initDesktopIconPositions();
   makeDesktopIconsDraggable();
+  initDesktopContextMenu();
   buildMenuBarItems();
   buildMobileNav();
   await loadAllWindowContent();
