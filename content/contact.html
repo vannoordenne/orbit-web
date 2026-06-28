@@ -17,10 +17,11 @@
 <h3 class="win-section-title">Send a message</h3>
 
 <form id="contact-form" class="contact-form" onsubmit="handleFormSubmit(event)">
-  <input type="hidden" name="_subject" value="New message via or.bit website">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_cc" value="hello@or-bit.xyz">
-  <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off">
+  <!-- Get your key at https://web3forms.com/ (safe to be public) -->
+  <input type="hidden" name="access_key" value="e4430527-f705-444c-8bc9-f8e2935c8557">
+  <input type="hidden" name="subject" value="New message via or.bit website">
+  <input type="hidden" name="from_name" value="or.bit website">
+  <input type="checkbox" name="botcheck" class="form-honey" tabindex="-1" autocomplete="off">
   <div class="form-field">
     <label class="form-label" for="contact-name">Name</label>
     <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required />
@@ -55,10 +56,6 @@
 <div id="form-success" class="form-success hidden">
   <div class="success-icon">&#9632;</div>
   <div id="form-success-text">Message sent. We'll be in touch.</div>
-</div>
-
-<div id="form-activation" class="form-activation hidden">
-  <div>Almost there — FormSubmit sent an activation link to <strong>marise@or-bit.xyz</strong>. Open that email (check spam) and click <em>Activate Form</em>, then submit again. After activation, copies also go to hello@or-bit.xyz.</div>
 </div>
 
 <div id="form-error" class="form-error hidden">

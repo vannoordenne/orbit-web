@@ -400,15 +400,11 @@ document.addEventListener('click', e => {
   }
 });
 
-// ---------- CONTACT FORM ----------
-const CONTACT_FORM_ENDPOINT = 'https://formsubmit.co/ajax/marise@or-bit.xyz';
-
-function isFormSubmitSuccess(data) {
-  return data.success === true || data.success === 'true';
-}
+// ---------- CONTACT FORM (Web3Forms) ----------
+const CONTACT_FORM_ENDPOINT = 'https://api.web3forms.com/submit';
 
 function hideFormNotices() {
-  ['form-success', 'form-activation', 'form-error'].forEach(id => {
+  ['form-success', 'form-error'].forEach(id => {
     document.getElementById(id)?.classList.add('hidden');
   });
 }
@@ -418,37 +414,44 @@ async function handleFormSubmit(e) {
   const form = e.target;
   const submitBtn = form.querySelector('.form-submit');
   const success = document.getElementById('form-success');
-  const activation = document.getElementById('form-activation');
   const error = document.getElementById('form-error');
   const errorText = document.getElementById('form-error-text');
+  const accessKey = form.querySelector('[name="access_key"]')?.value?.trim();
 
-  if (form.querySelector('[name="_honey"]')?.value) return;
+  if (form.querySelector('[name="botcheck"]')?.checked) return;
 
   hideFormNotices();
+
+  if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+    if (error && errorText) {
+      errorText.textContent = 'Form not configured yet. Email hello@or-bit.xyz directly.';
+      error.classList.remove('hidden');
+    }
+    return;
+  }
 
   const originalLabel = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending…';
 
   try {
+    const payload = Object.fromEntries(new FormData(form));
     const response = await fetch(CONTACT_FORM_ENDPOINT, {
       method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: new FormData(form),
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json().catch(() => ({}));
     const message = typeof data.message === 'string' ? data.message : '';
 
-    if (isFormSubmitSuccess(data)) {
+    if (response.ok && data.success) {
       form.reset();
       form.style.display = 'none';
       if (success) success.classList.remove('hidden');
-      return;
-    }
-
-    if (message.toLowerCase().includes('activation')) {
-      if (activation) activation.classList.remove('hidden');
       return;
     }
 
