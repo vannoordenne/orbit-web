@@ -30,9 +30,10 @@ const WINDOWS = [
   { id: 'founders',  label: 'Meet the founders', icon: 'folder', top: 100, left: 160, width: 680 },
   { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
   { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
-  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['talks', 'workshops', 'toolkit'] },
+  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['talks', 'workshops', 'speculation', 'toolkit'] },
   { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 300, width: 580, desktop: true },
   { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 110, left: 360, width: 620, desktop: true },
+  { id: 'speculation', label: 'The Speculation Game', desktopLabel: 'Speculation Game', icon: 'cards', top: 120, left: 480, width: 560, desktop: true },
   { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 100, left: 420, width: 560, desktop: true },
   { id: 'archive',   label: 'Archive',           icon: 'folder', top: 130, left: 200, width: 480 },
   { id: 'contact',   label: 'Contact / Book us', icon: 'doc',    top: 110, left: 320, width: 560, desktop: true },
@@ -401,7 +402,7 @@ function buildDesktopIcons() {
     const div = document.createElement('div');
     div.className = 'desktop-icon';
     div.setAttribute('ondblclick', `openWindow('${w.id}')`);
-    div.innerHTML = `<div class="icon-img icon-${w.icon}"></div><span class="icon-label">${w.label}</span>`;
+    div.innerHTML = `<div class="icon-img icon-${w.icon}"></div><span class="icon-label">${w.desktopLabel || w.label}</span>`;
     grid.insertBefore(div, trash);
   });
 }
@@ -514,8 +515,11 @@ document.addEventListener('mousedown', e => {
 // ---------- TALK CARD TOGGLE ----------
 let suppressCardToggle = false;
 
-function toggleCard(card) {
+function toggleCard(el, event) {
   if (suppressCardToggle) return;
+  if (event && event.target.closest('a, button, [data-open-window]')) return;
+  const card = el.classList.contains('talk-card') ? el : el.closest('.talk-card');
+  if (!card) return;
   card.classList.toggle('open');
 }
 

@@ -296,7 +296,7 @@ html, body {
   cursor: default;
   padding: 4px 6px;
   border: 2px solid transparent;
-  width: 72px;
+  width: 88px;
   text-align: center;
   pointer-events: auto;
   user-select: none;
@@ -411,6 +411,46 @@ html, body {
   background: var(--black);
 }
 
+.icon-cards {
+  background: transparent;
+  border: none;
+  position: relative;
+}
+
+/* back card */
+.icon-cards::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 34px;
+  background: var(--gray3);
+  border: 2px solid var(--black);
+  transform: rotate(-14deg);
+  transform-origin: bottom center;
+}
+
+/* front card */
+.icon-cards::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 12px;
+  width: 26px;
+  height: 34px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  transform: rotate(10deg);
+  transform-origin: bottom center;
+  background-image:
+    linear-gradient(var(--black), var(--black)),
+    linear-gradient(var(--black), var(--black));
+  background-size: 5px 5px, 5px 5px;
+  background-position: 4px 4px, calc(100% - 4px) calc(100% - 4px);
+  background-repeat: no-repeat;
+}
+
 .icon-doc {
   background: var(--white);
   border: 2px solid var(--black);
@@ -455,8 +495,10 @@ html, body {
   line-height: 1.3;
   color: var(--black);
   text-align: center;
-  max-width: 70px;
-  word-break: break-word;
+  max-width: 88px;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 /* ---------- HOME SPLASH ---------- */
@@ -877,6 +919,27 @@ p {
   display: block;
 }
 
+.win-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.win-gallery img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  border: 2px solid var(--black);
+  background: var(--gray1);
+}
+
+@media (max-width: 520px) {
+  .win-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
 .founder-identity {
   min-width: 0;
 }
@@ -895,6 +958,15 @@ p {
   line-height: 1.4;
   color: var(--gray6);
   margin-top: 3px;
+}
+
+.founder-web {
+  display: inline-block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--black);
+  text-decoration: underline;
 }
 
 .founder-card p {
@@ -972,6 +1044,7 @@ p {
   cursor: pointer;
   margin-top: 8px;
   display: inline-block;
+  text-decoration: none;
 }
 
 .win-cta:hover {
@@ -989,7 +1062,6 @@ p {
 .talk-card {
   border: 1px solid var(--black);
   margin-bottom: 8px;
-  cursor: pointer;
   background: var(--white);
 }
 
@@ -998,6 +1070,8 @@ p {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
   background: var(--gray1);
   border-bottom: 1px solid transparent;
 }
@@ -1162,10 +1236,31 @@ p {
   line-height: 1.35;
 }
 
+a.hosted-org {
+  text-decoration: underline;
+}
+
 .hosted-context {
   color: var(--gray7);
   font-size: 10px;
   line-height: 1.35;
+}
+
+.hosted-context a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.inline-link {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline;
 }
 
 /* ---------- FORMAT GRID ---------- */
@@ -1287,6 +1382,10 @@ p {
   font-size: 11px;
   color: var(--gray7);
   margin-bottom: 8px;
+}
+
+.cs-text .win-cta {
+  margin-right: 8px;
 }
 
 /* ---------- EMPTY FOLDER ---------- */
@@ -1461,6 +1560,11 @@ p {
   font-weight: 700;
 }
 
+.window-scroll a:not(.win-cta) {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .form-submit:disabled {
   opacity: 0.6;
   cursor: wait;
@@ -1495,6 +1599,10 @@ p {
 
 .contact-link-val {
   color: var(--black);
+}
+
+a.contact-link-val {
+  text-decoration: underline;
 }
 
 /* ---------- WINDOW RESIZE HANDLE ---------- */
