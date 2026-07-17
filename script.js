@@ -269,8 +269,8 @@ async function loadAllWindowContent() {
 
 // ---------- BUILD DESKTOP ICONS ----------
 const DESKTOP_ICON_GAP = 20;
-const DESKTOP_ICON_MARGIN = 16;
-const DESKTOP_ICON_WIDTH = 72;
+const DESKTOP_ICON_MARGIN = 18;
+const DESKTOP_ICON_WIDTH = 88;
 
 function initDesktopIconPositions(force = false) {
   const icons = document.querySelectorAll('.desktop-grid .desktop-icon');
