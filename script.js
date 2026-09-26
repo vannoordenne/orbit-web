@@ -636,6 +636,18 @@ const DEEP_LINK_PATHS = {
   contact: 'contact',
 };
 
+// Parent windows to open first on deep links (bottom → front),
+// so the target sits in its usual browsing context.
+const DEEP_LINK_CONTEXT = {
+  founders: ['about'],
+  'dark-tech': ['research'],
+  archive: ['research'],
+  speculation: ['research', 'dark-tech'],
+  toolkit: ['research', 'dark-tech'],
+  workshops: ['research', 'dark-tech'],
+  talks: ['educatie'],
+};
+
 const RESERVED_PATH_SEGMENTS = new Set([
   '', 'index.html', 'style.css', 'script.js', 'content', 'images',
   'marise', 'jolijn', 'print', 'card-marise.html', 'card-jolijn.html',
@@ -707,6 +719,14 @@ function syncDeepLink(windowId, cardId) {
 function applyDeepLink(target) {
   if (!target || !target.id) return false;
   if (!document.getElementById('win-' + target.id)) return false;
+
+  const context = DEEP_LINK_CONTEXT[target.id] || [];
+  context.forEach(id => {
+    if (id !== target.id && document.getElementById('win-' + id)) {
+      openWindow(id, { updateUrl: false });
+    }
+  });
+
   openWindow(target.id, { card: target.card, updateUrl: true });
   return true;
 }
