@@ -22,21 +22,37 @@ setInterval(updateClock, 10000);
 //   3. Add content/{id}.html
 //
 // menuBar: true       → clickable item in the top menu bar
-// menuBarChildren     → sub-window IDs shown in the dropdown under this item
+// menuBarChildren     → dropdown entries: window id string, or { label, url } for external links
 // desktop: true       → icon on the desktop
 // appleMenu: true     → appears in the ⌘ apple dropdown
 const WINDOWS = [
-  { id: 'about',     label: 'About',            icon: 'folder', top: 80,  left: 80,  width: 560, menuBar: false },
-  { id: 'founders',  label: 'Meet the founders', icon: 'folder', top: 100, left: 160, width: 680 },
-  { id: 'research',  label: 'Research',          icon: 'folder', top: 100, left: 140, width: 520, menuBar: true, menuBarChildren: ['archive'] },
-  { id: 'lab',       label: 'Lab',               icon: 'folder', top: 120, left: 200, width: 520, menuBar: true },
-  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 140, left: 260, width: 540, menuBar: true, menuBarChildren: ['talks', 'workshops', 'speculation', 'toolkit'] },
-  { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 300, width: 580, desktop: true },
-  { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 110, left: 360, width: 620, desktop: true },
-  { id: 'speculation', label: 'The Speculation Game', desktopLabel: 'Speculation Game', icon: 'cards', top: 120, left: 480, width: 560, desktop: true },
-  { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 100, left: 420, width: 560, desktop: true },
-  { id: 'archive',   label: 'Archive',           icon: 'folder', top: 130, left: 200, width: 480 },
-  { id: 'contact',   label: 'Contact / Book us', icon: 'doc',    top: 110, left: 320, width: 560, desktop: true },
+  { id: 'about',     label: 'About',            icon: 'folder', top: 64,  left: 180, width: 560, desktop: true },
+  { id: 'founders',  label: 'Meet the founders', icon: 'folder', top: 105, left: 250, width: 680 },
+  { id: 'research',  label: 'Research',          icon: 'folder', top: 78,  left: 360, width: 560, menuBar: true, desktop: true, menuBarChildren: [
+    'dark-tech',
+    'archive',
+  ]},
+  { id: 'lab',       label: 'Lab',               icon: 'folder', top: 155, left: 500, width: 520, menuBar: true, desktop: true },
+  { id: 'educatie',  label: 'Education',          icon: 'folder', top: 100, left: 440, width: 540, menuBar: true, desktop: true, menuBarChildren: [
+    { label: 'Dark Tech Method', url: 'https://darktechmethod.com' },
+    'talks',
+    'workshops',
+    'speculation',
+    'toolkit',
+  ]},
+  { id: 'dark-tech', label: 'Dark Tech',         icon: 'folder', top: 100, left: 400, width: 560 },
+  { id: 'talks',     label: 'Talks',             icon: 'folder', top: 90,  left: 320, width: 580 },
+  { id: 'workshops', label: 'Workshops',         icon: 'folder', top: 165, left: 240, width: 620 },
+  { id: 'speculation', label: 'The Speculation Game', desktopLabel: 'Speculation Game', icon: 'cards', top: 70, left: 520, width: 560 },
+  { id: 'toolkit',   label: 'Dark Tech Toolkit', icon: 'toolbox', top: 185, left: 300, width: 560 },
+  { id: 'archive',   label: 'Archive',           icon: 'folder', top: 200, left: 200, width: 480 },
+  { id: 'contact',   label: 'Contact',           icon: 'mail',   top: 125, left: 560, width: 560, desktop: true },
+];
+
+const MOBILE_NAV_ORDER = [
+  'about', 'research', 'dark-tech', 'lab', 'educatie',
+  'talks', 'workshops', 'speculation', 'toolkit',
+  'archive', 'contact',
 ];
 
 // ---------- WINDOW STATE ----------
@@ -431,13 +447,24 @@ function buildMenuBarItems() {
       divider.className = 'dropdown-divider';
       dropdown.appendChild(divider);
 
-      w.menuBarChildren.forEach(childId => {
-        const child = WINDOWS.find(x => x.id === childId);
-        if (!child) return;
+      w.menuBarChildren.forEach(childRef => {
         const item = document.createElement('div');
         item.className = 'dropdown-item';
-        item.textContent = child.label;
-        item.onclick = () => openWindow(child.id);
+
+        if (typeof childRef === 'object' && childRef.url) {
+          item.textContent = childRef.label;
+          item.onclick = () => {
+            closeAllDropdowns();
+            window.open(childRef.url, '_blank', 'noopener,noreferrer');
+          };
+        } else {
+          const childId = typeof childRef === 'string' ? childRef : childRef.id;
+          const child = WINDOWS.find(x => x.id === childId);
+          if (!child) return;
+          item.textContent = child.label;
+          item.onclick = () => openWindow(child.id);
+        }
+
         dropdown.appendChild(item);
       });
 
@@ -494,13 +521,25 @@ function closeMobileNav() {
 function buildMobileNav() {
   const nav = document.getElementById('mobile-nav');
   if (!nav) return;
-  WINDOWS.forEach(w => {
+
+  MOBILE_NAV_ORDER.forEach(id => {
+    const w = WINDOWS.find(x => x.id === id);
+    if (!w) return;
     const item = document.createElement('div');
     item.className = 'mobile-nav-item';
     item.textContent = w.label;
     item.addEventListener('click', () => openWindow(w.id));
     nav.appendChild(item);
   });
+
+  const methodItem = document.createElement('a');
+  methodItem.className = 'mobile-nav-item';
+  methodItem.href = 'https://darktechmethod.com';
+  methodItem.target = '_blank';
+  methodItem.rel = 'noopener noreferrer';
+  methodItem.textContent = 'Dark Tech Method';
+  methodItem.addEventListener('click', () => closeMobileNav());
+  nav.appendChild(methodItem);
 }
 
 // ---------- CLICK ON WINDOW TO FOCUS ----------
