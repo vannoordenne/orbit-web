@@ -642,9 +642,9 @@ const DEEP_LINK_CONTEXT = {
   founders: ['about'],
   'dark-tech': ['research'],
   archive: ['research'],
-  speculation: ['research', 'dark-tech'],
-  toolkit: ['research', 'dark-tech'],
-  workshops: ['research', 'dark-tech'],
+  speculation: ['educatie'],
+  toolkit: ['educatie'],
+  workshops: ['educatie'],
   talks: ['educatie'],
 };
 
