@@ -73,7 +73,7 @@ function positionFoundersWindow(win) {
   win.style.left = (aboutLeft + 48) + 'px';
 }
 
-function openWindow(name) {
+function openWindow(name, options = {}) {
   const win = document.getElementById('win-' + name);
   if (!win) return;
 
@@ -83,13 +83,17 @@ function openWindow(name) {
     closeMobileNav();
     win.classList.remove('mobile-collapsed', 'mobile-hidden');
     scheduleOpenFirstTalkCard(name);
+    if (options.card) scheduleOpenTalkCard(name, options.card);
     setTimeout(() => win.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    if (options.updateUrl !== false) syncDeepLink(name, options.card);
     return;
   }
 
   if (win.classList.contains('visible')) {
     bringToFront(win);
     if (name === 'founders') positionFoundersWindow(win);
+    if (options.card) scheduleOpenTalkCard(name, options.card);
+    if (options.updateUrl !== false) syncDeepLink(name, options.card);
     return;
   }
 
@@ -108,6 +112,8 @@ function openWindow(name) {
 
   updateActiveStates();
   scheduleOpenFirstTalkCard(name);
+  if (options.card) scheduleOpenTalkCard(name, options.card);
+  if (options.updateUrl !== false) syncDeepLink(name, options.card);
 
   if (name === 'founders') positionFoundersWindow(win);
 }
@@ -272,7 +278,7 @@ function makeDraggable() {
 // ---------- LOAD WINDOW CONTENT ----------
 async function loadAllWindowContent() {
   await Promise.all(WINDOWS.map(w =>
-    fetch(`content/${w.id}.html`)
+    fetch(`/content/${w.id}.html`)
       .then(r => r.text())
       .then(html => {
         const scroll = document.querySelector(`#win-${w.id} .window-scroll`);
@@ -579,6 +585,132 @@ function scheduleOpenFirstTalkCard(windowId) {
   }, 50);
 }
 
+function openTalkCard(windowId, cardId) {
+  const scroll = document.querySelector(`#win-${windowId} .window-scroll`);
+  if (!scroll || !cardId) return;
+  const card = scroll.querySelector(`[data-card-id="${cardId}"]`);
+  if (!card) return;
+  scroll.querySelectorAll(':scope > .talk-card').forEach(c => c.classList.remove('open'));
+  card.classList.add('open');
+}
+
+function scheduleOpenTalkCard(windowId, cardId) {
+  openTalkCard(windowId, cardId);
+  suppressCardToggle = true;
+  setTimeout(() => {
+    openTalkCard(windowId, cardId);
+    suppressCardToggle = false;
+  }, 60);
+}
+
+// ---------- DEEP LINKS (path / ?open= / #) ----------
+// Examples:
+//   /speculation-game
+//   /designing-dark-tech
+//   ?open=speculation
+//   #toolkit
+const DEEP_LINK_ALIASES = {
+  education: { id: 'educatie' },
+  speculation: { id: 'speculation' },
+  'speculation-game': { id: 'speculation' },
+  toolkit: { id: 'toolkit' },
+  'dark-tech-toolkit': { id: 'toolkit' },
+  'dark-tech': { id: 'dark-tech' },
+  'dark-tech-method': { id: 'dark-tech' },
+  'designing-dark-tech': { id: 'workshops', card: 'designing-dark-tech' },
+};
+
+// Preferred pretty path when syncing the URL
+const DEEP_LINK_PATHS = {
+  about: 'about',
+  founders: 'founders',
+  research: 'research',
+  'dark-tech': 'dark-tech',
+  lab: 'lab',
+  educatie: 'education',
+  talks: 'talks',
+  workshops: 'workshops',
+  speculation: 'speculation-game',
+  toolkit: 'dark-tech-toolkit',
+  archive: 'archive',
+  contact: 'contact',
+};
+
+const RESERVED_PATH_SEGMENTS = new Set([
+  '', 'index.html', 'style.css', 'script.js', 'content', 'images',
+  'marise', 'jolijn', 'print', 'card-marise.html', 'card-jolijn.html',
+]);
+
+function resolveDeepLinkTarget(raw) {
+  if (!raw) return null;
+  const key = String(raw).trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+  if (!key || RESERVED_PATH_SEGMENTS.has(key)) return null;
+  if (DEEP_LINK_ALIASES[key]) return { ...DEEP_LINK_ALIASES[key] };
+  if (WINDOWS.some(w => w.id === key)) return { id: key };
+  return null;
+}
+
+function getDeepLinkFromLocation() {
+  const params = new URLSearchParams(window.location.search);
+  const openParam = params.get('open');
+  const cardParam = params.get('card');
+  let target = resolveDeepLinkTarget(openParam);
+
+  if (!target) {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    const segment = path.split('/').filter(Boolean).pop() || '';
+    target = resolveDeepLinkTarget(segment);
+  }
+
+  if (!target && window.location.hash) {
+    const hash = window.location.hash.replace(/^#\/?/, '').split('&')[0];
+    target = resolveDeepLinkTarget(hash);
+  }
+
+  if (target && cardParam) target.card = cardParam;
+  return target;
+}
+
+function syncDeepLink(windowId, cardId) {
+  let slug = null;
+
+  if (cardId) {
+    const aliasEntry = Object.entries(DEEP_LINK_ALIASES).find(([, v]) => (
+      v.id === windowId && v.card === cardId
+    ));
+    slug = aliasEntry ? aliasEntry[0] : null;
+  }
+
+  if (!slug) slug = DEEP_LINK_PATHS[windowId] || windowId;
+
+  const usePrettyPath = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const url = new URL(window.location.href);
+
+  if (usePrettyPath) {
+    url.pathname = '/' + slug;
+    url.search = '';
+    url.hash = '';
+  } else {
+    url.pathname = '/';
+    url.searchParams.set('open', slug);
+    url.searchParams.delete('card');
+    url.hash = '';
+  }
+
+  const next = url.pathname + url.search + url.hash;
+  const current = window.location.pathname + window.location.search + window.location.hash;
+  if (next !== current) {
+    history.replaceState({ open: windowId, card: cardId || null }, '', next);
+  }
+}
+
+function applyDeepLink(target) {
+  if (!target || !target.id) return false;
+  if (!document.getElementById('win-' + target.id)) return false;
+  openWindow(target.id, { card: target.card, updateUrl: true });
+  return true;
+}
+
 function initTalkCards() {
   document.querySelectorAll('.window-scroll').forEach(scroll => {
     const first = scroll.querySelector(':scope > .talk-card');
@@ -591,7 +723,9 @@ document.addEventListener('click', e => {
   if (openTrigger) {
     e.preventDefault();
     e.stopPropagation();
-    openWindow(openTrigger.dataset.openWindow);
+    openWindow(openTrigger.dataset.openWindow, {
+      card: openTrigger.dataset.openCard || undefined,
+    });
     return;
   }
 
@@ -814,11 +948,24 @@ window.addEventListener('DOMContentLoaded', async () => {
   makeDraggable();
   handleMobileLayout();
 
-  if (!isMobile()) {
-    setTimeout(() => openWindow('about'), 300);
+  const deepLink = getDeepLinkFromLocation();
+  if (deepLink) {
+    setTimeout(() => applyDeepLink(deepLink), 300);
+  } else if (!isMobile()) {
+    setTimeout(() => openWindow('about', { updateUrl: false }), 300);
   }
 
   initCursorOrbit();
+});
+
+window.addEventListener('popstate', () => {
+  const deepLink = getDeepLinkFromLocation();
+  if (deepLink) applyDeepLink(deepLink);
+});
+
+window.addEventListener('hashchange', () => {
+  const deepLink = getDeepLinkFromLocation();
+  if (deepLink) applyDeepLink(deepLink);
 });
 
 window.addEventListener('resize', () => {
